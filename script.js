@@ -24,12 +24,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Back to top button
     const backToTopButton = document.getElementById('back-to-top');
+    const stickyNav = document.querySelector('.sticky-nav');
 
     window.addEventListener('scroll', function() {
+        // Back to top button visibility
         if (window.pageYOffset > 300) {
             backToTopButton.classList.add('visible');
         } else {
             backToTopButton.classList.remove('visible');
+        }
+
+        // Header visibility on scroll
+        if (window.pageYOffset > 100) {
+            stickyNav.classList.add('scrolled');
+        } else {
+            stickyNav.classList.remove('scrolled');
         }
     });
 
