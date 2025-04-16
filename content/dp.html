@@ -1,0 +1,33 @@
+<div class="card" id="dp">
+    <h2>Part 9: Dynamic Programming</h2>
+    <p>Dynamic Programming (DP) is a powerful technique for solving problems that exhibit overlapping subproblems and optimal substructure. It involves breaking down a complex problem into smaller, simpler subproblems, solving each subproblem only once, and storing their solutions to avoid redundant computations. This approach can significantly improve the efficiency of algorithms for certain types of problems.</p>
+    <p>Striver's 79 sheet includes a substantial section on dynamic programming, covering a variety of classic DP problems such as "Maximum sum of non-adjacent elements," "Longest Common Subsequence," and "Edit Distance." These problems often require a different way of thinking compared to greedy or divide-and-conquer approaches. The explanations for DP problems should emphasize the concepts of memoization (top-down DP) and tabulation (bottom-up DP) in a clear and accessible manner for beginners. The parenthetical numbers associated with some DP problems in snippet might refer to a specific ordering or categorization within Striver's broader materials, which could provide additional context if accessible.</p>
+    <div class="question">
+        <h3>Question: Maximum sum of non-adjacent elements (DP 5)</h3>
+        <div class="solution">
+            <p><strong>Explanation:</strong> Given an array of positive numbers, find the maximum sum of a subsequence such that no two numbers in the subsequence are adjacent. We can solve this using dynamic programming. Let's define two values for each index i: `include[i]` as the maximum sum including the element at index i, and `exclude[i]` as the maximum sum excluding the element at index i. For the base case (i=0), `include = nums[0]` and `exclude = 0`. For subsequent indices, `include[i] = exclude[i-1] + nums[i]` (if we include the current element, we cannot include the previous one), and `exclude[i] = max(include[i-1], exclude[i-1])` (if we exclude the current element, the maximum sum is the maximum of including or excluding the previous element).</p>
+            <div class="code">
+                <pre>
+# Python Example
+def maxSumNonAdjacent(nums):
+    if not nums:
+        return 0
+    n = len(nums)
+    include = [0] * n
+    exclude = [0] * n
+
+    include[0] = nums[0]
+    exclude[0] = 0
+
+    for i in range(1, n):
+        include[i] = exclude[i-1] + nums[i]
+        exclude[i] = max(include[i-1], exclude[i-1])
+
+    return max(include[n-1], exclude[n-1])
+                </pre>
+            </div>
+            <p class="explanation"><strong>Time Complexity:</strong> O(N), where N is the number of elements in the array, as we iterate through the array once.</p>
+            <p class="explanation"><strong>Space Complexity:</strong> O(N) to store the include and exclude arrays. This can be optimized to O(1) by using just two variables instead of arrays.</p>
+        </div>
+    </div>
+</div>

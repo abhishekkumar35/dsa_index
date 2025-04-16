@@ -1,0 +1,27 @@
+<div class="card" id="heaps">
+    <h2>Part 6: Heaps</h2>
+    <p>Heaps are a specialized tree-based data structure that satisfy the heap property: in a min-heap, the value of each node is greater than or equal to the value of its parent, with the minimum value at the root. In a max-heap, the value of each node is less than or equal to the value of its parent, with the maximum value at the root. Heaps are particularly useful for priority queues, where elements with higher (or lower) priority are processed first.</p>
+    <p>Striver's 79 sheet includes problems like "Kth largest element in an array [use priority queue]" and "Min Heap and Max Heap Implementation". The problem of finding the kth largest element in an array can be efficiently solved using a min-heap of size k. By iterating through the array and maintaining the k largest elements in the min-heap, the smallest element in the heap (which is at the root) will be the kth largest element overall. The explicit mention of using a "priority queue" highlights its direct connection to the concept of a min-heap, which is a common way to implement priority queues in programming languages.</p>
+    <div class="question">
+        <h3>Question: Kth largest element in an array [use priority queue]</h3>
+        <div class="solution">
+            <p><strong>Explanation:</strong> To find the kth largest element in an array, we can use a min-heap (priority queue). We maintain a min-heap of size k. For each element in the array, we add it to the heap. If the size of the heap exceeds k, we remove the smallest element (the root of the min-heap). After processing all elements, the root of the min-heap will be the kth largest element in the array.</p>
+            <div class="code">
+                <pre>
+# Python Example
+import heapq
+
+def findKthLargest(nums, k):
+    heap = []
+    for num in nums:
+        heapq.heappush(heap, num)
+        if len(heap) > k:
+            heapq.heappop(heap)
+    return heapq.heappop(heap)
+                </pre>
+            </div>
+            <p class="explanation"><strong>Time Complexity:</strong> O(N log K), where N is the number of elements in the array and K is the desired kth largest element. We iterate through N elements, and heap operations take O(log K) time.</p>
+            <p class="explanation"><strong>Space Complexity:</strong> O(K) to store the min-heap of size k.</p>
+        </div>
+    </div>
+</div>

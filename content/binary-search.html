@@ -1,0 +1,27 @@
+<div class="card" id="binary-search">
+    <h2>Part 2: Binary Search</h2>
+    <p>Binary search is a highly efficient searching algorithm used to find a specific element within a sorted array. It works by repeatedly dividing the search interval in half. If the middle element is the target value, the search is complete. If the target is less than the middle element, the search continues in the left half; otherwise, it continues in the right half. This process continues until the target is found or the search interval is empty.</p>
+    <p>The problems under Binary Search in Striver's 79 sheet often involve applying this fundamental algorithm in more complex scenarios. For instance, "Search in Rotated Sorted Array II" presents a variation where the sorted array has been rotated, and it might contain duplicate elements. The rotation disrupts the strictly increasing order, making a direct application of standard binary search challenging. However, by carefully examining the relationship between the middle element and the left and right boundaries, one can determine which half of the array remains sorted and adjust the search accordingly. The presence of duplicates adds another layer of complexity, as the middle element might be equal to both the left and right elements, requiring special handling to avoid infinite loops. The difficulty level of problems in this section, ranging from Medium to Hard, underscores the need for a solid understanding of the core binary search principle and its adaptability to various conditions.</p>
+    <div class="question">
+        <h3>Question: Find minimum in Rotated Sorted Array</h3>
+        <div class="solution">
+            <p><strong>Explanation:</strong> This problem asks to find the minimum element in a sorted array that has been rotated at some pivot point. Using binary search, we can efficiently find this minimum. The key idea is to compare the middle element with the rightmost element. If the middle element is greater than the rightmost element, it means the minimum element lies in the right half. Otherwise, the minimum element lies in the left half (including the middle element).</p>
+            <div class="code">
+                <pre>
+# Python Example
+def findMin(nums):
+    left, right = 0, len(nums) - 1
+    while left < right:
+        mid = (left + right) // 2
+        if nums[mid] > nums[right]:
+            left = mid + 1
+        else:
+            right = mid
+    return nums[left]
+                </pre>
+            </div>
+            <p class="explanation"><strong>Time Complexity:</strong> O(log N), where N is the number of elements in the array, due to the binary search approach.</p>
+            <p class="explanation"><strong>Space Complexity:</strong> O(1), as we are using a constant amount of extra space.</p>
+        </div>
+    </div>
+</div>

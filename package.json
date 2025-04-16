@@ -1,0 +1,21 @@
+{
+  "name": "dsa-problems-revision",
+  "version": "1.0.0",
+  "description": "Very Important DSA Problems for Quick Revision",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve",
+    "build": "echo 'No build step required'"
+  },
+  "keywords": [
+    "dsa",
+    "algorithms",
+    "data structures",
+    "interview preparation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

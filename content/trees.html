@@ -1,0 +1,36 @@
+<div class="card" id="trees">
+    <h2>Part 7: Trees (BT + BST)</h2>
+    <p>Trees are hierarchical data structures consisting of nodes connected by edges. A binary tree is a special type of tree where each node has at most two children, referred to as the left child and the right child. A Binary Search Tree (BST) is a binary tree with an additional property: for each node, all nodes in its left subtree have values less than the node's value, and all nodes in its right subtree have values greater than the node's value. Trees are widely used in computer science for various applications, including representing hierarchical data, searching, and sorting.</p>
+    <p>Striver's 79 sheet features a significant number of problems related to binary trees and BSTs, highlighting their importance in DSA. These problems range from basic traversals (like inorder, preorder, postorder) to more complex tasks like finding the diameter of a binary tree, determining the lowest common ancestor (LCA), or constructing a binary tree from its inorder and preorder traversals. The sheer volume of tree-related problems suggests that a strong foundational understanding of the properties of binary trees and BSTs is crucial for interview preparation.</p>
+    <div class="question">
+        <h3>Question: Diameter of Binary Tree</h3>
+        <div class="solution">
+            <p><strong>Explanation:</strong> The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root. We can solve this problem recursively. The diameter of a tree rooted at a particular node is the maximum of the following three values: the diameter of the left subtree, the diameter of the right subtree, and the longest path between nodes in the left and right subtrees (which passes through the root). The length of this path is the height of the left subtree plus the height of the right subtree.</p>
+            <div class="code">
+                <pre>
+# Python Example
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def diameterOfBinaryTree(root):
+    diameter = 0
+    def height(node):
+        nonlocal diameter
+        if not node:
+            return 0
+        left_height = height(node.left)
+        right_height = height(node.right)
+        diameter = max(diameter, left_height + right_height)
+        return 1 + max(left_height, right_height)
+    height(root)
+    return diameter
+                </pre>
+            </div>
+            <p class="explanation"><strong>Time Complexity:</strong> O(N), where N is the number of nodes in the binary tree, as we visit each node once.</p>
+            <p class="explanation"><strong>Space Complexity:</strong> O(H), where H is the height of the binary tree, due to the recursion stack. In the worst case (skewed tree), H can be N.</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Very Important DSA Problems for Quick Revision</title>
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@12.7.3/dist/framer-motion.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Quick Revision</h2>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-link active" onclick="scrollToSection('introduction')"><i class="fas fa-home"></i> Introduction</li>
+                <li class="nav-link" onclick="scrollToSection('arrays')"><i class="fas fa-layer-group"></i> Arrays & Hashings</li>
+                <li class="nav-link" onclick="scrollToSection('binary-search')"><i class="fas fa-search"></i> Binary Search</li>
+                <li class="nav-link" onclick="scrollToSection('linked-list')"><i class="fas fa-link"></i> Linked List</li>
+                <li class="nav-link" onclick="scrollToSection('recursion')"><i class="fas fa-redo"></i> Recursion & Backtracking</li>
+                <li class="nav-link" onclick="scrollToSection('stacks')"><i class="fas fa-database"></i> Stacks/Queues</li>
+                <li class="nav-link" onclick="scrollToSection('heaps')"><i class="fas fa-sort-amount-up"></i> Heaps</li>
+                <li class="nav-link" onclick="scrollToSection('trees')"><i class="fas fa-tree"></i> Trees (BT + BST)</li>
+                <li class="nav-link" onclick="scrollToSection('graphs')"><i class="fas fa-project-diagram"></i> Graphs</li>
+                <li class="nav-link" onclick="scrollToSection('dp')"><i class="fas fa-table"></i> Dynamic Programming</li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <button class="toggle-sidebar" id="toggle-sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="sticky-nav">
+                <div class="header">
+                    <h1>Very Important DSA Problems for Quick Revision</h1>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active" onclick="openTab('overview')">Overview</div>
+                    <div class="tab" onclick="openTab('problems')">Problems</div>
+                    <div class="tab" onclick="openTab('resources')">Resources</div>
+                </div>
+            </div>
+
+            <!-- Tab Contents -->
+            <div id="overview" class="tab-content active">
+                <!-- Introduction Section -->
+                <div id="introduction-content">
+                    <div class="card" id="introduction">
+                        <h1>Very Important DSA Problems for Quick Revision</h1>
+                        <p>The landscape of technical interviews, particularly for software engineering roles, places significant emphasis on a candidate's proficiency in Data Structures and Algorithms (DSA). This compilation of Very Important DSA Problems for Quick Revision has been carefully selected to help you prepare efficiently for technical interviews. It features essential coding interview questions spanning various DSA topics, frequently encountered in the hiring processes of major technology companies such as Google, Amazon, and Microsoft. The intent behind this curated list is to provide a focused approach to mastering essential DSA concepts for individuals aiming to excel in these competitive environments.</p>
+                        <p>This guide aims to serve as a comprehensive resource with a particular focus on providing beginner-friendly solutions and explanations for each problem. While these problems require a foundational understanding of DSA, this resource is crafted to assist those who are relatively new to these concepts or are looking for more accessible explanations to solidify their knowledge. The structure follows a thematic organization covering all major DSA topics for a complete revision experience.</p>
+                    </div>
+                </div>
+
+                <!-- Arrays Section -->
+                <div id="arrays-content">
+                    <div class="card" id="arrays">
+                        <h2>Part 1: Arrays & Hashings</h2>
+                        <p>Arrays and hashings form the bedrock of many data structure and algorithm problems. Arrays, being contiguous blocks of memory holding elements of the same type, offer efficient access to elements based on their index. Hashings, on the other hand, provide a way to map keys to values, enabling fast lookups, insertions, and deletions. The problems in this section delve into various techniques and applications of these fundamental concepts.</p>
+                        <p>One of the initial problems encountered is "Next Permutation". This problem challenges one to rearrange a given sequence of numbers into the lexicographically next greater permutation of numbers. For beginners, it can be helpful to think of this like arranging words in a dictionary. The algorithm involves identifying the first decreasing element from the right, then finding the smallest element to its right that is greater than this element, swapping them, and finally reversing the portion of the array to the right of the swapped element. This process ensures that the resulting permutation is the next one in lexicographical order.</p>
+                        <p>Another classic problem in this section is the "3-Sum Problem". The objective here is to find all unique triplets in a given array that sum up to zero. A common approach involves first sorting the array. Once sorted, one can iterate through each element and then use a two-pointer technique on the remaining part of the array to find pairs that sum to the negative of the current element. Sorting allows for efficient skipping of duplicate elements and systematic searching for the required pairs. The presence of similar problem lists across different resources indicates a consensus on the importance of these fundamental array manipulation problems. While code solutions might be readily available in various repositories, the emphasis here is on understanding the underlying logic in a way that is accessible to beginners. Resources like Take U Forward offer in-depth video solutions and articles, which can be valuable for grasping the intended explanations.</p>
+                        <div class="question">
+                            <h3>Question: Kadane's Algorithm</h3>
+                            <div class="solution">
+                                <p><strong>Explanation:</strong> Kadane's Algorithm is used to find the maximum sum of a contiguous subarray within a one-dimensional array of numbers. The algorithm works by iterating through the array, keeping track of the current maximum sum ending at the current position and the overall maximum sum found so far. For each element, if the current maximum sum becomes negative, it is reset to zero, as a negative sum will not contribute to a larger overall maximum.</p>
+                                <div class="code">
+                                    <pre>
+# Python Example
+def maxSubArray(nums):
+    max_so_far = nums[0]
+    current_max = nums[0]
+    for i in range(1, len(nums)):
+        current_max = max(nums[i], current_max + nums[i])
+        max_so_far = max(max_so_far, current_max)
+    return max_so_far
+                                    </pre>
+                                </div>
+                                <p class="explanation"><strong>Time Complexity:</strong> O(N), where N is the number of elements in the array, as we iterate through the array once.</p>
+                                <p class="explanation"><strong>Space Complexity:</strong> O(1), as we are using a constant amount of extra space.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Binary Search Section -->
+                <div id="binary-search-content">
+                    <div class="card" id="binary-search">
+                        <h2>Part 2: Binary Search</h2>
+                        <p>Binary search is a highly efficient searching algorithm used to find a specific element within a sorted array. It works by repeatedly dividing the search interval in half. If the middle element is the target value, the search is complete. If the target is less than the middle element, the search continues in the left half; otherwise, it continues in the right half. This process continues until the target is found or the search interval is empty.</p>
+                        <p>The problems under Binary Search in this collection often involve applying this fundamental algorithm in more complex scenarios. For instance, "Search in Rotated Sorted Array II" presents a variation where the sorted array has been rotated, and it might contain duplicate elements. The rotation disrupts the strictly increasing order, making a direct application of standard binary search challenging. However, by carefully examining the relationship between the middle element and the left and right boundaries, one can determine which half of the array remains sorted and adjust the search accordingly. The presence of duplicates adds another layer of complexity, as the middle element might be equal to both the left and right elements, requiring special handling to avoid infinite loops. The difficulty level of problems in this section, ranging from Medium to Hard, underscores the need for a solid understanding of the core binary search principle and its adaptability to various conditions.</p>
+                        <div class="question">
+                            <h3>Question: Find minimum in Rotated Sorted Array</h3>
+                            <div class="solution">
+                                <p><strong>Explanation:</strong> This problem asks to find the minimum element in a sorted array that has been rotated at some pivot point. Using binary search, we can efficiently find this minimum. The key idea is to compare the middle element with the rightmost element. If the middle element is greater than the rightmost element, it means the minimum element lies in the right half. Otherwise, the minimum element lies in the left half (including the middle element).</p>
+                                <div class="code">
+                                    <pre>
+# Python Example
+def findMin(nums):
+    left, right = 0, len(nums) - 1
+    while left < right:
+        mid = (left + right) // 2
+        if nums[mid] > nums[right]:
+            left = mid + 1
+        else:
+            right = mid
+    return nums[left]
+                                    </pre>
+                                </div>
+                                <p class="explanation"><strong>Time Complexity:</strong> O(log N), where N is the number of elements in the array, due to the binary search approach.</p>
+                                <p class="explanation"><strong>Space Complexity:</strong> O(1), as we are using a constant amount of extra space.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Linked List Section -->
+                <div id="linked-list-content">
+                    <div class="card" id="linked-list">
+                        <h2>Part 3: Linked List</h2>
+                        <p>Linked lists are a fundamental data structure consisting of nodes, where each node contains data and a pointer (or reference) to the next node in the sequence. Unlike arrays, linked lists do not store elements in contiguous memory locations, which allows for dynamic memory allocation and efficient insertion and deletion of elements at any position. However, accessing an element in a linked list requires traversing from the head of the list, making random access less efficient compared to arrays.</p>
+                        <p>This collection includes several important linked list problems. One of the easier problems is "Middle of a LinkedList". This problem requires finding the middle node of a given linked list. The Tortoise and Hare method, also known as Floyd's cycle-finding algorithm, provides an elegant solution. It involves using two pointers, one moving at a slower pace (tortoise) and the other moving at a faster pace (hare). When the hare reaches the end of the list (or the second to last node in case of an even length list), the tortoise will be at the middle node. This technique is efficient as it requires only a single pass through the linked list. Naming specific algorithms like the TortoiseHare method helps beginners build their understanding of standard approaches to common problems.</p>
+                        <div class="question">
+                            <h3>Question: Detect a loop in LL</h3>
+                            <div class="solution">
+                                <p><strong>Explanation:</strong> Detecting a loop in a linked list is another application of the Tortoise and Hare method. If a loop exists, the fast pointer will eventually catch up to the slow pointer. If the fast pointer reaches the end of the list (null), then there is no loop.</p>
+                                <div class="code">
+                                    <pre>
+# Python Example
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def hasCycle(head):
+    slow = head
+    fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+    return False
+                                    </pre>
+                                </div>
+                                <p class="explanation"><strong>Time Complexity:</strong> O(N), where N is the number of nodes in the linked list, as both pointers traverse the list at most once.</p>
+                                <p class="explanation"><strong>Space Complexity:</strong> O(1), as we are using only two pointers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recursion Section -->
+                <div id="recursion-content">
+                    <div class="card" id="recursion">
+                        <h2>Part 4: Recursion & Backtracking</h2>
+                        <p>Recursion and backtracking are powerful problem-solving techniques often used for problems that can be broken down into smaller, self-similar subproblems. Recursion involves a function calling itself until a base case is reached, while backtracking explores all possible solutions by trying out different options and undoing the choices if they don't lead to a valid solution.</p>
+                        <p>Problems involving recursion and backtracking can be particularly challenging for beginners due to their abstract nature. This collection includes problems like "Print all subsequences/Power Set" and "Combination Sum" in this section. Explaining these concepts often requires a very detailed approach, possibly using visual aids or diagrams to illustrate the flow of recursive calls and the process of backtracking. For instance, when generating all subsequences of a string, a recursive approach might involve either including or excluding the current character at each step, leading to a tree of possibilities that needs to be explored.</p>
+                        <div class="question">
+                            <h3>Question: Combination Sum</h3>
+                            <div class="solution">
+                                <p><strong>Explanation:</strong> The Combination Sum problem asks to find all possible combinations of numbers from a given array that sum up to a specific target value. The same number can be used multiple times. A backtracking approach is well-suited for this problem. We can recursively explore each number in the array: either we include it in our current combination (and potentially include it again), or we exclude it and move to the next number. We stop the recursion when the current sum equals the target or exceeds it.</p>
+                                <div class="code">
+                                    <pre>
+# Python Example
+def combinationSum(candidates, target):
+    result = []
+    def backtrack(combination, remaining, start):
+        if remaining == 0:
+            result.append(list(combination))
+            return
+        if remaining < 0:
+            return
+        for i in range(start, len(candidates)):
+            combination.append(candidates[i])
+            backtrack(combination, remaining - candidates[i], i)
+            combination.pop()
+    backtrack([], target, 0)
+    return result
+                                    </pre>
+                                </div>
+                                <p class="explanation"><strong>Time Complexity:</strong> In the worst case, it can be exponential, as we are exploring all possible combinations.</p>
+                                <p class="explanation"><strong>Space Complexity:</strong> O(K), where K is the average length of a combination in the result, due to the space used by the recursion stack.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stacks Section -->
+                <div id="stacks-content">
+                    <div class="card" id="stacks">
+                        <h2>Part 5: Stacks/Queues</h2>
+                        <p>Stacks and queues are fundamental linear data structures that follow specific rules for adding and removing elements. A stack follows the Last-In, First-Out (LIFO) principle, where the last element added is the first one to be removed, much like a stack of plates. A queue follows the First-In, First-Out (FIFO) principle, where the first element added is the first one to be removed, similar to a queue of people waiting in line.</p>
+                        <p>Problems in this section involve using stacks for tasks like expression evaluation or backtracking, and queues for level-order traversal in trees or breadth-first search in graphs. This collection includes problems like "Nearest Smaller Element" and "Sliding Window Maximum" which can be efficiently solved using stacks and queues, respectively. These problems help develop a strong understanding of when and how to apply these fundamental data structures in various algorithmic challenges.</p>
+                        <div class="question">
+                            <h3>Question: Next Greater Element</h3>
+                            <div class="solution">
+                                <p><strong>Explanation:</strong> Given an array, the next greater element for an element x is the first element to its right that is greater than x. If no such element exists, the next greater element is -1. This problem can be efficiently solved using a stack. We iterate through the array, and for each element, we pop elements from the stack that are smaller than the current element, as the current element is their next greater element. We then push the current element onto the stack.</p>
+                                <div class="code">
+                                    <pre>
+# Python Example
+def nextGreaterElements(nums):
+    n = len(nums)
+    result = [-1] * n
+    stack = []
+    for i in range(2 * n): # Iterate twice to handle circular array
+        num = nums[i % n]
+        while stack and nums[stack[-1]] < num:
+            result[stack.pop()] = num
+        if i < n:
+            stack.append(i)
+    return result
+                                    </pre>
+                                </div>
+                                <p class="explanation"><strong>Time Complexity:</strong> O(N), where N is the number of elements in the array, as each element is pushed onto and popped from the stack at most once.</p>
+                                <p class="explanation"><strong>Space Complexity:</strong> O(N) in the worst case, as the stack might store all the elements of the array.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Heaps Section -->
+                <div id="heaps-content">
+                    <div class="card" id="heaps">
+                        <h2>Part 6: Heaps</h2>
+                        <p>Heaps are a specialized tree-based data structure that satisfy the heap property: in a min-heap, the value of each node is greater than or equal to the value of its parent, with the minimum value at the root. In a max-heap, the value of each node is less than or equal to the value of its parent, with the maximum value at the root. Heaps are particularly useful for priority queues, where elements with higher (or lower) priority are processed first.</p>
+                        <p>This collection includes problems like "Kth largest element in an array [use priority queue]" and "Min Heap and Max Heap Implementation". The problem of finding the kth largest element in an array can be efficiently solved using a min-heap of size k. By iterating through the array and maintaining the k largest elements in the min-heap, the smallest element in the heap (which is at the root) will be the kth largest element overall. The explicit mention of using a "priority queue" highlights its direct connection to the concept of a min-heap, which is a common way to implement priority queues in programming languages.</p>
+                        <div class="question">
+                            <h3>Question: Kth largest element in an array [use priority queue]</h3>
+                            <div class="solution">
+                                <p><strong>Explanation:</strong> To find the kth largest element in an array, we can use a min-heap (priority queue). We maintain a min-heap of size k. For each element in the array, we add it to the heap. If the size of the heap exceeds k, we remove the smallest element (the root of the min-heap). After processing all elements, the root of the min-heap will be the kth largest element in the array.</p>
+                                <div class="code">
+                                    <pre>
+# Python Example
+import heapq
+
+def findKthLargest(nums, k):
+    heap = []
+    for num in nums:
+        heapq.heappush(heap, num)
+        if len(heap) > k:
+            heapq.heappop(heap)
+    return heapq.heappop(heap)
+                                    </pre>
+                                </div>
+                                <p class="explanation"><strong>Time Complexity:</strong> O(N log K), where N is the number of elements in the array and K is the desired kth largest element. We iterate through N elements, and heap operations take O(log K) time.</p>
+                                <p class="explanation"><strong>Space Complexity:</strong> O(K) to store the min-heap of size k.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trees Section -->
+                <div id="trees-content">
+                    <div class="card" id="trees">
+                        <h2>Part 7: Trees (BT + BST)</h2>
+                        <p>Trees are hierarchical data structures consisting of nodes connected by edges. A binary tree is a special type of tree where each node has at most two children, referred to as the left child and the right child. A Binary Search Tree (BST) is a binary tree with an additional property: for each node, all nodes in its left subtree have values less than the node's value, and all nodes in its right subtree have values greater than the node's value. Trees are widely used in computer science for various applications, including representing hierarchical data, searching, and sorting.</p>
+                        <p>This collection features a significant number of problems related to binary trees and BSTs, highlighting their importance in DSA. These problems range from basic traversals (like inorder, preorder, postorder) to more complex tasks like finding the diameter of a binary tree, determining the lowest common ancestor (LCA), or constructing a binary tree from its inorder and preorder traversals. The sheer volume of tree-related problems suggests that a strong foundational understanding of the properties of binary trees and BSTs is crucial for interview preparation.</p>
+                        <div class="question">
+                            <h3>Question: Diameter of Binary Tree</h3>
+                            <div class="solution">
+                                <p><strong>Explanation:</strong> The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root. We can solve this problem recursively. The diameter of a tree rooted at a particular node is the maximum of the following three values: the diameter of the left subtree, the diameter of the right subtree, and the longest path between nodes in the left and right subtrees (which passes through the root). The length of this path is the height of the left subtree plus the height of the right subtree.</p>
+                                <div class="code">
+                                    <pre>
+# Python Example
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def diameterOfBinaryTree(root):
+    diameter = 0
+    def height(node):
+        nonlocal diameter
+        if not node:
+            return 0
+        left_height = height(node.left)
+        right_height = height(node.right)
+        diameter = max(diameter, left_height + right_height)
+        return 1 + max(left_height, right_height)
+    height(root)
+    return diameter
+                                    </pre>
+                                </div>
+                                <p class="explanation"><strong>Time Complexity:</strong> O(N), where N is the number of nodes in the binary tree, as we visit each node once.</p>
+                                <p class="explanation"><strong>Space Complexity:</strong> O(H), where H is the height of the binary tree, due to the recursion stack. In the worst case (skewed tree), H can be N.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphs Section -->
+                <div id="graphs-content">
+                    <div class="card" id="graphs">
+                        <h2>Part 8: Graphs</h2>
+                        <p>Graphs are a versatile data structure used to represent relationships between objects. They consist of nodes (or vertices) and edges that connect these nodes. Graphs can be directed (where edges have a direction) or undirected (where edges do not have a direction). They can also be weighted, where each edge has an associated value or weight. Graphs are used to model a wide variety of real-world systems, such as social networks, transportation networks, and computer networks.</p>
+                        <p>The graph problems in this collection cover a broad range of algorithms, including Depth-First Search (DFS), Breadth-First Search (BFS), Dijkstra's algorithm for finding the shortest path in a weighted graph, Bellman-Ford algorithm for detecting negative cycles, and Kruskal's algorithm for finding the minimum spanning tree. These problems often require a foundational understanding of these algorithms before they can be applied to specific scenarios like finding the number of distinct islands in a grid or determining the cheapest flights within a certain number of stops. The explanations for these problems will need to introduce these algorithms at a high level before delving into their application in solving the specific questions.</p>
+                        <div class="question">
+                            <h3>Question: Rotten Oranges</h3>
+                            <div class="solution">
+                                <p><strong>Explanation:</strong> This problem involves a grid of oranges, where some are fresh (represented by 1), some are rotten (represented by 2), and some are empty (represented by 0). Every minute, any fresh orange that is adjacent (up, down, left, or right) to a rotten orange becomes rotten. The goal is to determine the minimum number of minutes that must elapse until no cell has a fresh orange. This problem can be solved using Breadth-First Search (BFS). We can start by adding all the initially rotten oranges to a queue. Then, we process the queue level by level, where each level represents one minute. For each rotten orange, we check its adjacent fresh oranges and mark them as rotten, adding them to the queue for the next minute.</p>
+                                <div class="code">
+                                    <pre>
+# Python Example
+from collections import deque
+
+def orangesRotting(grid):
+    rows, cols = len(grid), len(grid[0])
+    queue = deque()
+    fresh_count = 0
+
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 2:
+                queue.append((r, c, 0))
+            elif grid[r][c] == 1:
+                fresh_count += 1
+
+    minutes = 0
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+    while queue:
+        r, c, time = queue.popleft()
+        minutes = max(minutes, time)
+        for dr, dc in directions:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:
+                grid[nr][nc] = 2
+                fresh_count -= 1
+                queue.append((nr, nc, time + 1))
+
+    return minutes if fresh_count == 0 else -1
+                                    </pre>
+                                </div>
+                                <p class="explanation"><strong>Time Complexity:</strong> O(M * N), where M is the number of rows and N is the number of columns in the grid, as we visit each cell at most once.</p>
+                                <p class="explanation"><strong>Space Complexity:</strong> O(M * N) in the worst case, if all oranges are initially rotten and added to the queue.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Programming Section -->
+                <div id="dp-content">
+                    <div class="card" id="dp">
+                        <h2>Part 9: Dynamic Programming</h2>
+                        <p>Dynamic Programming (DP) is a powerful technique for solving problems that exhibit overlapping subproblems and optimal substructure. It involves breaking down a complex problem into smaller, simpler subproblems, solving each subproblem only once, and storing their solutions to avoid redundant computations. This approach can significantly improve the efficiency of algorithms for certain types of problems.</p>
+                        <p>This collection includes a substantial section on dynamic programming, covering a variety of classic DP problems such as "Maximum sum of non-adjacent elements," "Longest Common Subsequence," and "Edit Distance." These problems often require a different way of thinking compared to greedy or divide-and-conquer approaches. The explanations for DP problems emphasize the concepts of memoization (top-down DP) and tabulation (bottom-up DP) in a clear and accessible manner for beginners. Understanding these core DP concepts is essential for tackling more complex algorithmic challenges in technical interviews.</p>
+                        <div class="question">
+                            <h3>Question: Maximum sum of non-adjacent elements (DP 5)</h3>
+                            <div class="solution">
+                                <p><strong>Explanation:</strong> Given an array of positive numbers, find the maximum sum of a subsequence such that no two numbers in the subsequence are adjacent. We can solve this using dynamic programming. Let's define two values for each index i: `include[i]` as the maximum sum including the element at index i, and `exclude[i]` as the maximum sum excluding the element at index i. For the base case (i=0), `include = nums[0]` and `exclude = 0`. For subsequent indices, `include[i] = exclude[i-1] + nums[i]` (if we include the current element, we cannot include the previous one), and `exclude[i] = max(include[i-1], exclude[i-1])` (if we exclude the current element, the maximum sum is the maximum of including or excluding the previous element).</p>
+                                <div class="code">
+                                    <pre>
+# Python Example
+def maxSumNonAdjacent(nums):
+    if not nums:
+        return 0
+    n = len(nums)
+    include = [0] * n
+    exclude = [0] * n
+
+    include[0] = nums[0]
+    exclude[0] = 0
+
+    for i in range(1, n):
+        include[i] = exclude[i-1] + nums[i]
+        exclude[i] = max(include[i-1], exclude[i-1])
+
+    return max(include[n-1], exclude[n-1])
+                                    </pre>
+                                </div>
+                                <p class="explanation"><strong>Time Complexity:</strong> O(N), where N is the number of elements in the array, as we iterate through the array once.</p>
+                                <p class="explanation"><strong>Space Complexity:</strong> O(N) to store the include and exclude arrays. This can be optimized to O(1) by using just two variables instead of arrays.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Problems Tab Content -->
+            <div id="problems" class="tab-content">
+                <div id="problems-content">
+                    <div class="card">
+                        <h2>Problem List Overview</h2>
+                        <p>This collection contains carefully selected problems that are frequently asked in technical interviews. Below is a categorized list of these problems with their difficulty levels.</p>
+
+                        <div class="progress-container">
+                            <span>Your Progress:</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <span id="progress-display">0/0 problems completed (0%)</span>
+                        </div>
+
+                        <div class="problem-category">
+                            <h3>Arrays & Hashing</h3>
+                            <table class="problem-table">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Problem</th>
+                                        <th>Difficulty</th>
+                                        <th>Key Concept</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-problem-id="31">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-31"></td>
+                                        <td><a href="https://leetcode.com/problems/next-permutation/" target="_blank">Next Permutation</a></td>
+                                        <td>Medium</td>
+                                        <td>Array Manipulation</td>
+                                    </tr>
+                                    <tr data-problem-id="53">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-53"></td>
+                                        <td><a href="https://leetcode.com/problems/maximum-subarray/" target="_blank">Kadane's Algorithm</a></td>
+                                        <td>Easy</td>
+                                        <td>Dynamic Programming</td>
+                                    </tr>
+                                    <tr data-problem-id="75">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-75"></td>
+                                        <td><a href="https://leetcode.com/problems/sort-colors/" target="_blank">Sort an array of 0's, 1's and 2's</a></td>
+                                        <td>Easy</td>
+                                        <td>Dutch National Flag Algorithm</td>
+                                    </tr>
+                                    <tr data-problem-id="121">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-121"></td>
+                                        <td><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock/" target="_blank">Stock Buy and Sell</a></td>
+                                        <td>Easy</td>
+                                        <td>Greedy</td>
+                                    </tr>
+                                    <tr data-problem-id="56">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-56"></td>
+                                        <td><a href="https://leetcode.com/problems/merge-intervals/" target="_blank">Merge Overlapping Subintervals</a></td>
+                                        <td>Medium</td>
+                                        <td>Sorting, Intervals</td>
+                                    </tr>
+                                    <tr data-problem-id="287">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-287"></td>
+                                        <td><a href="https://leetcode.com/problems/find-the-duplicate-number/" target="_blank">Find the duplicate in an array of N+1 integers</a></td>
+                                        <td>Medium</td>
+                                        <td>Floyd's Tortoise and Hare</td>
+                                    </tr>
+                                    <tr data-problem-id="missing">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-missing"></td>
+                                        <td><a href="https://www.interviewbit.com/problems/repeat-and-missing-number-array/" target="_blank">Repeat and Missing Number</a></td>
+                                        <td>Medium</td>
+                                        <td>Math, Bit Manipulation</td>
+                                    </tr>
+                                    <tr data-problem-id="inversions">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-inversions"></td>
+                                        <td><a href="https://www.geeksforgeeks.org/counting-inversions/" target="_blank">Count Inversions</a></td>
+                                        <td>Medium</td>
+                                        <td>Merge Sort</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="problem-category">
+                            <h3>Binary Search</h3>
+                            <table class="problem-table">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Problem</th>
+                                        <th>Difficulty</th>
+                                        <th>Key Concept</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-problem-id="153">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-153"></td>
+                                        <td><a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/" target="_blank">Find minimum in Rotated Sorted Array</a></td>
+                                        <td>Medium</td>
+                                        <td>Modified Binary Search</td>
+                                    </tr>
+                                    <tr data-problem-id="33">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-33"></td>
+                                        <td><a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank">Search in Rotated Sorted Array</a></td>
+                                        <td>Medium</td>
+                                        <td>Modified Binary Search</td>
+                                    </tr>
+                                    <tr data-problem-id="4">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-4"></td>
+                                        <td><a href="https://leetcode.com/problems/median-of-two-sorted-arrays/" target="_blank">Median of Two Sorted Arrays</a></td>
+                                        <td>Hard</td>
+                                        <td>Binary Search</td>
+                                    </tr>
+                                    <tr data-problem-id="kth-element">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-kth-element"></td>
+                                        <td><a href="https://practice.geeksforgeeks.org/problems/k-th-element-of-two-sorted-array1317/1" target="_blank">Kth Element of Two Sorted Arrays</a></td>
+                                        <td>Hard</td>
+                                        <td>Binary Search</td>
+                                    </tr>
+                                    <tr data-problem-id="allocate-pages">
+                                        <td><input type="checkbox" class="problem-checkbox" id="problem-allocate-pages"></td>
+                                        <td><a href="https://www.interviewbit.com/problems/allocate-books/" target="_blank">Allocate Minimum Number of Pages</a></td>
+                                        <td>Hard</td>
+                                        <td>Binary Search on Answer</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="problem-category">
+                            <h3>Linked List</h3>
+                            <table class="problem-table">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Problem</th>
+                                        <th>Difficulty</th>
+                                        <th>Key Concept</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Reverse a Linked List</td>
+                                        <td>Easy</td>
+                                        <td>Iterative/Recursive Traversal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Middle of the Linked List</td>
+                                        <td>Easy</td>
+                                        <td>Slow and Fast Pointers</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Merge Two Sorted Lists</td>
+                                        <td>Easy</td>
+                                        <td>Merge Operation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remove Nth Node From End of List</td>
+                                        <td>Medium</td>
+                                        <td>Two Pointers</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Detect a Loop in Linked List</td>
+                                        <td>Easy</td>
+                                        <td>Floyd's Cycle Finding Algorithm</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Palindrome Linked List</td>
+                                        <td>Medium</td>
+                                        <td>Reverse, Two Pointers</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Flatten a Linked List</td>
+                                        <td>Medium</td>
+                                        <td>Recursion, Merge</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="problem-category">
+                            <h3>Trees</h3>
+                            <table class="problem-table">
+                                <thead>
+                                    <tr>
+                                        <th>Problem</th>
+                                        <th>Difficulty</th>
+                                        <th>Key Concept</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Inorder Traversal</td>
+                                        <td>Easy</td>
+                                        <td>Tree Traversal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Preorder Traversal</td>
+                                        <td>Easy</td>
+                                        <td>Tree Traversal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Postorder Traversal</td>
+                                        <td>Easy</td>
+                                        <td>Tree Traversal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Level Order Traversal</td>
+                                        <td>Medium</td>
+                                        <td>BFS</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Diameter of Binary Tree</td>
+                                        <td>Easy</td>
+                                        <td>Recursion</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Maximum Path Sum</td>
+                                        <td>Hard</td>
+                                        <td>Recursion</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Check if Binary Tree is Balanced</td>
+                                        <td>Easy</td>
+                                        <td>Recursion</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lowest Common Ancestor</td>
+                                        <td>Medium</td>
+                                        <td>Tree Traversal</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="problem-category">
+                            <h3>Dynamic Programming</h3>
+                            <table class="problem-table">
+                                <thead>
+                                    <tr>
+                                        <th>Problem</th>
+                                        <th>Difficulty</th>
+                                        <th>Key Concept</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Maximum Sum of Non-Adjacent Elements</td>
+                                        <td>Medium</td>
+                                        <td>1D DP</td>
+                                    </tr>
+                                    <tr>
+                                        <td>House Robber II</td>
+                                        <td>Medium</td>
+                                        <td>1D DP</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Longest Common Subsequence</td>
+                                        <td>Medium</td>
+                                        <td>2D DP</td>
+                                    </tr>
+                                    <tr>
+                                        <td>0/1 Knapsack</td>
+                                        <td>Medium</td>
+                                        <td>2D DP</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Edit Distance</td>
+                                        <td>Hard</td>
+                                        <td>2D DP</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Maximum Product Subarray</td>
+                                        <td>Medium</td>
+                                        <td>1D DP</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Longest Increasing Subsequence</td>
+                                        <td>Medium</td>
+                                        <td>1D DP, Binary Search</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources Tab Content -->
+            <div id="resources" class="tab-content">
+                <div id="resources-content">
+                    <div class="card">
+                        <h2>Recommended Resources</h2>
+                        <p>Here are some valuable resources to help you master the concepts covered in this DSA problem collection:</p>
+
+                        <div class="resource-list">
+                            <div class="resource-item">
+                                <h3>Online Platforms</h3>
+                                <ul>
+                                    <li><strong>LeetCode</strong> - Practice platform with thousands of coding problems</li>
+                                    <li><strong>GeeksforGeeks</strong> - Comprehensive DSA tutorials and practice problems</li>
+                                    <li><strong>InterviewBit</strong> - Interview preparation platform with company-specific questions</li>
+                                    <li><strong>HackerRank</strong> - Coding challenges and competitions</li>
+                                    <li><strong>CodeForces</strong> - Competitive programming platform</li>
+                                </ul>
+                            </div>
+
+                            <div class="resource-item">
+                                <h3>YouTube Channels</h3>
+                                <ul>
+                                    <li><strong>Take U Forward (Striver)</strong> - In-depth explanations of DSA concepts and problems</li>
+                                    <li><strong>Aditya Verma</strong> - Excellent tutorials on dynamic programming and other topics</li>
+                                    <li><strong>Tushar Roy</strong> - Clear explanations of complex algorithms</li>
+                                    <li><strong>Abdul Bari</strong> - Comprehensive algorithm tutorials</li>
+                                    <li><strong>Back To Back SWE</strong> - Detailed problem-solving approaches</li>
+                                </ul>
+                            </div>
+
+                            <div class="resource-item">
+                                <h3>Books</h3>
+                                <ul>
+                                    <li><strong>Introduction to Algorithms</strong> by Cormen, Leiserson, Rivest, and Stein</li>
+                                    <li><strong>Algorithms</strong> by Robert Sedgewick and Kevin Wayne</li>
+                                    <li><strong>Cracking the Coding Interview</strong> by Gayle Laakmann McDowell</li>
+                                    <li><strong>Elements of Programming Interviews</strong> by Adnan Aziz, Tsung-Hsien Lee, and Amit Prakash</li>
+                                    <li><strong>Competitive Programming 3</strong> by Steven Halim and Felix Halim</li>
+                                </ul>
+                            </div>
+
+                            <div class="resource-item">
+                                <h3>Courses</h3>
+                                <ul>
+                                    <li><strong>Algorithms Specialization</strong> on Coursera by Stanford University</li>
+                                    <li><strong>Data Structures and Algorithms</strong> on Udemy by Abdul Bari</li>
+                                    <li><strong>Grokking the Coding Interview</strong> on Educative.io</li>
+                                    <li><strong>Algorithms, Part I & II</strong> on Coursera by Princeton University</li>
+                                    <li><strong>Master the Coding Interview: Data Structures + Algorithms</strong> on Udemy</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Study Plan</h2>
+                        <p>Here's a recommended 8-week study plan to master these important DSA problems:</p>
+
+                        <div class="study-plan">
+                            <div class="week">
+                                <h3>Week 1-2: Fundamentals</h3>
+                                <ul>
+                                    <li>Arrays and Hashing</li>
+                                    <li>Basic problem-solving techniques</li>
+                                    <li>Time and space complexity analysis</li>
+                                    <li>Practice 2-3 problems daily</li>
+                                </ul>
+                            </div>
+
+                            <div class="week">
+                                <h3>Week 3-4: Intermediate Data Structures</h3>
+                                <ul>
+                                    <li>Linked Lists</li>
+                                    <li>Stacks and Queues</li>
+                                    <li>Binary Search</li>
+                                    <li>Heaps</li>
+                                    <li>Practice 3-4 problems daily</li>
+                                </ul>
+                            </div>
+
+                            <div class="week">
+                                <h3>Week 5-6: Advanced Data Structures</h3>
+                                <ul>
+                                    <li>Trees (Binary Trees, BST)</li>
+                                    <li>Graphs</li>
+                                    <li>Recursion and Backtracking</li>
+                                    <li>Practice 3-4 problems daily</li>
+                                </ul>
+                            </div>
+
+                            <div class="week">
+                                <h3>Week 7-8: Advanced Algorithms</h3>
+                                <ul>
+                                    <li>Dynamic Programming</li>
+                                    <li>Greedy Algorithms</li>
+                                    <li>Advanced Graph Algorithms</li>
+                                    <li>Mock interviews and timed practice</li>
+                                    <li>Review and strengthen weak areas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back to top button -->
+            <button class="back-to-top" id="back-to-top">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="problem-tracker.js"></script>
+</body>
+</html>

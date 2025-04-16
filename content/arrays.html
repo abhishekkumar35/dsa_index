@@ -1,0 +1,26 @@
+<div class="card" id="arrays">
+    <h2>Part 1: Arrays & Hashings</h2>
+    <p>Arrays and hashings form the bedrock of many data structure and algorithm problems. Arrays, being contiguous blocks of memory holding elements of the same type, offer efficient access to elements based on their index. Hashings, on the other hand, provide a way to map keys to values, enabling fast lookups, insertions, and deletions. The problems in this section of Striver's 79 sheet delve into various techniques and applications of these fundamental concepts.</p>
+    <p>One of the initial problems encountered is "Next Permutation". This problem challenges one to rearrange a given sequence of numbers into the lexicographically next greater permutation of numbers. For beginners, it can be helpful to think of this like arranging words in a dictionary. The algorithm involves identifying the first decreasing element from the right, then finding the smallest element to its right that is greater than this element, swapping them, and finally reversing the portion of the array to the right of the swapped element. This process ensures that the resulting permutation is the next one in lexicographical order.</p>
+    <p>Another classic problem in this section is the "3-Sum Problem". The objective here is to find all unique triplets in a given array that sum up to zero. A common approach involves first sorting the array. Once sorted, one can iterate through each element and then use a two-pointer technique on the remaining part of the array to find pairs that sum to the negative of the current element. Sorting allows for efficient skipping of duplicate elements and systematic searching for the required pairs. The presence of similar problem lists across different resources indicates a consensus on the importance of these fundamental array manipulation problems. While code solutions might be readily available in various repositories, the emphasis here is on understanding the underlying logic in a way that is accessible to beginners. Resources like Take U Forward offer in-depth video solutions and articles, which can be valuable for grasping the intended explanations.</p>
+    <div class="question">
+        <h3>Question: Kadane's Algorithm</h3>
+        <div class="solution">
+            <p><strong>Explanation:</strong> Kadane's Algorithm is used to find the maximum sum of a contiguous subarray within a one-dimensional array of numbers. The algorithm works by iterating through the array, keeping track of the current maximum sum ending at the current position and the overall maximum sum found so far. For each element, if the current maximum sum becomes negative, it is reset to zero, as a negative sum will not contribute to a larger overall maximum.</p>
+            <div class="code">
+                <pre>
+# Python Example
+def maxSubArray(nums):
+    max_so_far = nums[0]
+    current_max = nums[0]
+    for i in range(1, len(nums)):
+        current_max = max(nums[i], current_max + nums[i])
+        max_so_far = max(max_so_far, current_max)
+    return max_so_far
+                </pre>
+            </div>
+            <p class="explanation"><strong>Time Complexity:</strong> O(N), where N is the number of elements in the array, as we iterate through the array once.</p>
+            <p class="explanation"><strong>Space Complexity:</strong> O(1), as we are using a constant amount of extra space.</p>
+        </div>
+    </div>
+</div>

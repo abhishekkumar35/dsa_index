@@ -1,0 +1,32 @@
+<div class="card" id="linked-list">
+    <h2>Part 3: Linked List</h2>
+    <p>Linked lists are a fundamental data structure consisting of nodes, where each node contains data and a pointer (or reference) to the next node in the sequence. Unlike arrays, linked lists do not store elements in contiguous memory locations, which allows for dynamic memory allocation and efficient insertion and deletion of elements at any position. However, accessing an element in a linked list requires traversing from the head of the list, making random access less efficient compared to arrays.</p>
+    <p>Striver's 79 sheet includes several important linked list problems. One of the easier problems is "Middle of a LinkedList". This problem requires finding the middle node of a given linked list. The Tortoise and Hare method, also known as Floyd's cycle-finding algorithm, provides an elegant solution. It involves using two pointers, one moving at a slower pace (tortoise) and the other moving at a faster pace (hare). When the hare reaches the end of the list (or the second to last node in case of an even length list), the tortoise will be at the middle node. This technique is efficient as it requires only a single pass through the linked list. Naming specific algorithms like the TortoiseHare method helps beginners build their understanding of standard approaches to common problems.</p>
+    <div class="question">
+        <h3>Question: Detect a loop in LL</h3>
+        <div class="solution">
+            <p><strong>Explanation:</strong> Detecting a loop in a linked list is another application of the Tortoise and Hare method. If a loop exists, the fast pointer will eventually catch up to the slow pointer. If the fast pointer reaches the end of the list (null), then there is no loop.</p>
+            <div class="code">
+                <pre>
+# Python Example
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def hasCycle(head):
+    slow = head
+    fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+    return False
+                </pre>
+            </div>
+            <p class="explanation"><strong>Time Complexity:</strong> O(N), where N is the number of nodes in the linked list, as both pointers traverse the list at most once.</p>
+            <p class="explanation"><strong>Space Complexity:</strong> O(1), as we are using only two pointers.</p>
+        </div>
+    </div>
+</div>

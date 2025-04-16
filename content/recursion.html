@@ -1,0 +1,32 @@
+<div class="card" id="recursion">
+    <h2>Part 4: Recursion & Backtracking</h2>
+    <p>Recursion and backtracking are powerful problem-solving techniques often used for problems that can be broken down into smaller, self-similar subproblems. Recursion involves a function calling itself until a base case is reached, while backtracking explores all possible solutions by trying out different options and undoing the choices if they don't lead to a valid solution.</p>
+    <p>Problems involving recursion and backtracking can be particularly challenging for beginners due to their abstract nature. Striver's 79 sheet includes problems like "Print all subsequences/Power Set" and "Combination Sum" in this section. Explaining these concepts often requires a very detailed approach, possibly using visual aids or diagrams to illustrate the flow of recursive calls and the process of backtracking. For instance, when generating all subsequences of a string, a recursive approach might involve either including or excluding the current character at each step, leading to a tree of possibilities that needs to be explored.</p>
+    <div class="question">
+        <h3>Question: Combination Sum</h3>
+        <div class="solution">
+            <p><strong>Explanation:</strong> The Combination Sum problem asks to find all possible combinations of numbers from a given array that sum up to a specific target value. The same number can be used multiple times. A backtracking approach is well-suited for this problem. We can recursively explore each number in the array: either we include it in our current combination (and potentially include it again), or we exclude it and move to the next number. We stop the recursion when the current sum equals the target or exceeds it.</p>
+            <div class="code">
+                <pre>
+# Python Example
+def combinationSum(candidates, target):
+    result = []
+    def backtrack(combination, remaining, start):
+        if remaining == 0:
+            result.append(list(combination))
+            return
+        if remaining < 0:
+            return
+        for i in range(start, len(candidates)):
+            combination.append(candidates[i])
+            backtrack(combination, remaining - candidates[i], i)
+            combination.pop()
+    backtrack([], target, 0)
+    return result
+                </pre>
+            </div>
+            <p class="explanation"><strong>Time Complexity:</strong> In the worst case, it can be exponential, as we are exploring all possible combinations.</p>
+            <p class="explanation"><strong>Space Complexity:</strong> O(K), where K is the average length of a combination in the result, due to the space used by the recursion stack.</p>
+        </div>
+    </div>
+</div>

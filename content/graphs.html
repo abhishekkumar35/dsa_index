@@ -1,0 +1,46 @@
+<div class="card" id="graphs">
+    <h2>Part 8: Graphs</h2>
+    <p>Graphs are a versatile data structure used to represent relationships between objects. They consist of nodes (or vertices) and edges that connect these nodes. Graphs can be directed (where edges have a direction) or undirected (where edges do not have a direction). They can also be weighted, where each edge has an associated value or weight. Graphs are used to model a wide variety of real-world systems, such as social networks, transportation networks, and computer networks.</p>
+    <p>The graph problems in Striver's 79 sheet cover a broad range of algorithms, including Depth-First Search (DFS), Breadth-First Search (BFS), Dijkstra's algorithm for finding the shortest path in a weighted graph, Bellman-Ford algorithm for detecting negative cycles, and Kruskal's algorithm for finding the minimum spanning tree. These problems often require a foundational understanding of these algorithms before they can be applied to specific scenarios like finding the number of distinct islands in a grid or determining the cheapest flights within a certain number of stops. The explanations for these problems will need to introduce these algorithms at a high level before delving into their application in solving the specific questions.</p>
+    <div class="question">
+        <h3>Question: Rotten Oranges</h3>
+        <div class="solution">
+            <p><strong>Explanation:</strong> This problem involves a grid of oranges, where some are fresh (represented by 1), some are rotten (represented by 2), and some are empty (represented by 0). Every minute, any fresh orange that is adjacent (up, down, left, or right) to a rotten orange becomes rotten. The goal is to determine the minimum number of minutes that must elapse until no cell has a fresh orange. This problem can be solved using Breadth-First Search (BFS). We can start by adding all the initially rotten oranges to a queue. Then, we process the queue level by level, where each level represents one minute. For each rotten orange, we check its adjacent fresh oranges and mark them as rotten, adding them to the queue for the next minute.</p>
+            <div class="code">
+                <pre>
+# Python Example
+from collections import deque
+
+def orangesRotting(grid):
+    rows, cols = len(grid), len(grid[0])
+    queue = deque()
+    fresh_count = 0
+
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 2:
+                queue.append((r, c, 0))
+            elif grid[r][c] == 1:
+                fresh_count += 1
+
+    minutes = 0
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+    while queue:
+        r, c, time = queue.popleft()
+        minutes = max(minutes, time)
+        for dr, dc in directions:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:
+                grid[nr][nc] = 2
+                fresh_count -= 1
+                queue.append((nr, nc, time + 1))
+
+    return minutes if fresh_count == 0 else -1
+                </pre>
+            </div>
+            <p class="explanation"><strong>Time Complexity:</strong> O(M * N), where M is the number of rows and N is the number of columns in the grid, as we visit each cell at most once.</p>
+            <p class="explanation"><strong>Space Complexity:</strong> O(M * N) in the worst case, if all oranges are initially rotten and added to the queue.</p>
+        </div>
+    </div>
+</div>

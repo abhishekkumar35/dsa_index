@@ -1,0 +1,29 @@
+<div class="card" id="stacks">
+    <h2>Part 5: Stacks/Queues</h2>
+    <p>Stacks and queues are fundamental linear data structures that follow specific rules for adding and removing elements. A stack follows the Last-In, First-Out (LIFO) principle, where the last element added is the first one to be removed, much like a stack of plates. A queue follows the First-In, First-Out (FIFO) principle, where the first element added is the first one to be removed, similar to a queue of people waiting in line.</p>
+    <p>While the provided snippets do not explicitly list the questions under "Stacks/Queues" from Striver's 79 sheet, the syllabus confirms it as a topic. Problems in this section might involve using stacks for tasks like expression evaluation or backtracking, and queues for level-order traversal in trees or breadth-first search in graphs. Snippet includes problems like "Nearest Smaller Element" and "Sliding Window Maximum" which can be efficiently solved using stacks and queues, respectively, suggesting the type of questions one might encounter in this part of the sheet.</p>
+    <div class="question">
+        <h3>Question: Next Greater Element</h3>
+        <div class="solution">
+            <p><strong>Explanation:</strong> Given an array, the next greater element for an element x is the first element to its right that is greater than x. If no such element exists, the next greater element is -1. This problem can be efficiently solved using a stack. We iterate through the array, and for each element, we pop elements from the stack that are smaller than the current element, as the current element is their next greater element. We then push the current element onto the stack.</p>
+            <div class="code">
+                <pre>
+# Python Example
+def nextGreaterElements(nums):
+    n = len(nums)
+    result = [-1] * n
+    stack = []
+    for i in range(2 * n): # Iterate twice to handle circular array
+        num = nums[i % n]
+        while stack and nums[stack[-1]] < num:
+            result[stack.pop()] = num
+        if i < n:
+            stack.append(i)
+    return result
+                </pre>
+            </div>
+            <p class="explanation"><strong>Time Complexity:</strong> O(N), where N is the number of elements in the array, as each element is pushed onto and popped from the stack at most once.</p>
+            <p class="explanation"><strong>Space Complexity:</strong> O(N) in the worst case, as the stack might store all the elements of the array.</p>
+        </div>
+    </div>
+</div>
