@@ -2,6 +2,7 @@
 const dbName = 'DSAProblemTracker';
 const dbVersion = 1;
 let db;
+let dbReady = false;
 
 // Open the database
 const request = indexedDB.open(dbName, dbVersion);
@@ -18,17 +19,26 @@ request.onupgradeneeded = function(event) {
 // Handle database open success
 request.onsuccess = function(event) {
     db = event.target.result;
+    dbReady = true;
     console.log('Database opened successfully');
     loadProblemStatus();
+    initializeEventListeners();
 };
 
 // Handle database open error
 request.onerror = function(event) {
     console.error('Error opening database:', event.target.error);
+    showNotification('Error opening database. Some features may not work.', 'error');
 };
 
 // Load problem status from IndexedDB
 function loadProblemStatus() {
+    if (!dbReady) {
+        console.log('Database not ready yet, will retry loading problem status');
+        setTimeout(loadProblemStatus, 100);
+        return;
+    }
+
     const checkboxes = document.querySelectorAll('.problem-checkbox');
 
     const transaction = db.transaction(['problems'], 'readonly');
@@ -36,15 +46,24 @@ function loadProblemStatus() {
 
     checkboxes.forEach(checkbox => {
         const problemId = checkbox.id.replace('problem-', '');
+        const row = checkbox.closest('tr');
         const request = objectStore.get(problemId);
 
         request.onsuccess = function(event) {
             const problem = event.target.result;
             if (problem && problem.completed) {
                 checkbox.checked = true;
+                if (row) row.classList.add('completed');
             }
         };
+
+        request.onerror = function(event) {
+            console.error(`Error loading status for problem ${problemId}:`, event.target.error);
+        };
     });
+
+    // Update progress stats after loading
+    updateProgressStats();
 }
 
 // Save problem status to IndexedDB
@@ -69,8 +88,8 @@ function saveProblemStatus(problemId, completed) {
     };
 }
 
-// Add event listeners to checkboxes and buttons
-document.addEventListener('DOMContentLoaded', function() {
+// Initialize event listeners after database is ready
+function initializeEventListeners() {
     const checkboxes = document.querySelectorAll('.problem-checkbox');
 
     checkboxes.forEach(checkbox => {
@@ -94,7 +113,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Export progress button
     const exportBtn = document.getElementById('export-progress');
     if (exportBtn) {
-        exportBtn.addEventListener('click', exportProgress);
+        exportBtn.addEventListener('click', function() {
+            if (!dbReady) {
+                showNotification('Database not ready yet. Please try again in a moment.', 'error');
+                return;
+            }
+            exportProgress();
+        });
     }
 
     // Import progress button
@@ -102,6 +127,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const importFile = document.getElementById('import-file');
     if (importBtn && importFile) {
         importBtn.addEventListener('click', function() {
+            if (!dbReady) {
+                showNotification('Database not ready yet. Please try again in a moment.', 'error');
+                return;
+            }
             importFile.click();
         });
 
@@ -112,63 +141,114 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+}
+
+// Add basic event listeners on DOM content loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // If database is already ready, initialize event listeners
+    if (dbReady) {
+        initializeEventListeners();
+    }
+    // Otherwise, they'll be initialized when the database is ready
 });
 
 // Update progress statistics
 function updateProgressStats() {
-    const transaction = db.transaction(['problems'], 'readonly');
-    const objectStore = transaction.objectStore('problems');
-    const index = objectStore.index('completed');
-    const countRequest = index.count(IDBKeyRange.only(true));
+    if (!dbReady) {
+        console.log('Database not ready yet, will retry updating progress stats');
+        setTimeout(updateProgressStats, 100);
+        return;
+    }
 
-    countRequest.onsuccess = function() {
-        const completedCount = countRequest.result;
-        const totalCount = document.querySelectorAll('.problem-checkbox').length;
-        const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+    try {
+        const transaction = db.transaction(['problems'], 'readonly');
+        const objectStore = transaction.objectStore('problems');
+        const index = objectStore.index('completed');
+        const countRequest = index.count(IDBKeyRange.only(true));
 
-        // Update progress display if it exists
-        const progressElement = document.getElementById('progress-display');
-        if (progressElement) {
-            progressElement.textContent = `${completedCount}/${totalCount} problems completed (${progressPercent}%)`;
-        }
+        countRequest.onsuccess = function() {
+            const completedCount = countRequest.result;
+            const totalCount = document.querySelectorAll('.problem-checkbox').length;
+            const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-        // Update progress bar
-        const progressFill = document.getElementById('progress-fill');
-        if (progressFill) {
-            progressFill.style.width = `${progressPercent}%`;
-        }
-    };
+            // Update progress display if it exists
+            const progressElement = document.getElementById('progress-display');
+            if (progressElement) {
+                progressElement.textContent = `${completedCount}/${totalCount} problems completed (${progressPercent}%)`;
+            }
+
+            // Update progress bar
+            const progressFill = document.getElementById('progress-fill');
+            if (progressFill) {
+                progressFill.style.width = `${progressPercent}%`;
+            }
+        };
+
+        countRequest.onerror = function(event) {
+            console.error('Error counting completed problems:', event.target.error);
+        };
+    } catch (error) {
+        console.error('Error updating progress stats:', error);
+    }
 }
 
 // Export progress to a JSON file
 function exportProgress() {
-    const transaction = db.transaction(['problems'], 'readonly');
-    const objectStore = transaction.objectStore('problems');
-    const request = objectStore.getAll();
+    if (!dbReady) {
+        showNotification('Database not ready yet. Please try again in a moment.', 'error');
+        return;
+    }
 
-    request.onsuccess = function() {
-        const problems = request.result;
-        const dataStr = JSON.stringify(problems, null, 2);
-        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+    try {
+        const transaction = db.transaction(['problems'], 'readonly');
+        const objectStore = transaction.objectStore('problems');
+        const request = objectStore.getAll();
 
-        const exportFileDefaultName = 'dsa_progress.json';
+        request.onsuccess = function() {
+            try {
+                const problems = request.result;
 
-        const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileDefaultName);
-        linkElement.click();
+                if (!problems || problems.length === 0) {
+                    showNotification('No progress to export. Complete some problems first!', 'error');
+                    return;
+                }
 
-        showNotification('Progress exported successfully!');
-    };
+                const dataStr = JSON.stringify(problems, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
 
-    request.onerror = function(event) {
-        console.error('Error exporting progress:', event.target.error);
+                const exportFileDefaultName = 'dsa_progress.json';
+
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                document.body.appendChild(linkElement); // Needed for Firefox
+                linkElement.click();
+                document.body.removeChild(linkElement); // Clean up
+
+                showNotification(`Progress exported successfully! (${problems.length} items)`);
+            } catch (error) {
+                console.error('Error processing export data:', error);
+                showNotification('Error processing export data. Please try again.', 'error');
+            }
+        };
+
+        request.onerror = function(event) {
+            console.error('Error exporting progress:', event.target.error);
+            showNotification('Error exporting progress. Please try again.', 'error');
+        };
+    } catch (error) {
+        console.error('Error starting export transaction:', error);
         showNotification('Error exporting progress. Please try again.', 'error');
-    };
+    }
 }
 
 // Import progress from a JSON file
 function importProgress(file) {
+    if (!dbReady) {
+        showNotification('Database not ready yet. Please try again in a moment.', 'error');
+        return;
+    }
+
     const reader = new FileReader();
 
     reader.onload = function(event) {
@@ -179,35 +259,68 @@ function importProgress(file) {
                 throw new Error('Invalid format: Expected an array of problems');
             }
 
-            const transaction = db.transaction(['problems'], 'readwrite');
-            const objectStore = transaction.objectStore('problems');
+            if (problems.length === 0) {
+                showNotification('The imported file contains no problem data.', 'error');
+                return;
+            }
 
-            // Clear existing data
-            const clearRequest = objectStore.clear();
+            // Validate the structure of at least the first problem
+            const firstProblem = problems[0];
+            if (!firstProblem.hasOwnProperty('id') || !firstProblem.hasOwnProperty('completed')) {
+                throw new Error('Invalid problem format: Missing required fields');
+            }
 
-            clearRequest.onsuccess = function() {
-                let count = 0;
+            try {
+                const transaction = db.transaction(['problems'], 'readwrite');
+                const objectStore = transaction.objectStore('problems');
 
-                problems.forEach(problem => {
-                    if (problem.id && typeof problem.completed === 'boolean') {
-                        const request = objectStore.put(problem);
-                        request.onsuccess = function() {
-                            count++;
-                            if (count === problems.length) {
-                                // Update UI after all problems are imported
-                                updateCheckboxes();
-                                updateProgressStats();
-                                showNotification(`Imported ${count} problem statuses successfully!`);
-                            }
-                        };
+                // Clear existing data
+                const clearRequest = objectStore.clear();
+
+                clearRequest.onsuccess = function() {
+                    let count = 0;
+                    let validProblems = 0;
+
+                    // Count valid problems first
+                    problems.forEach(problem => {
+                        if (problem.id && typeof problem.completed === 'boolean') {
+                            validProblems++;
+                        }
+                    });
+
+                    if (validProblems === 0) {
+                        showNotification('No valid problems found in the import file.', 'error');
+                        return;
                     }
-                });
-            };
 
-            clearRequest.onerror = function(event) {
-                console.error('Error clearing existing data:', event.target.error);
-                showNotification('Error importing progress. Please try again.', 'error');
-            };
+                    problems.forEach(problem => {
+                        if (problem.id && typeof problem.completed === 'boolean') {
+                            const request = objectStore.put(problem);
+                            request.onsuccess = function() {
+                                count++;
+                                if (count === validProblems) {
+                                    // Update UI after all problems are imported
+                                    updateCheckboxes();
+                                    updateProgressStats();
+                                    showNotification(`Imported ${count} problem statuses successfully!`);
+                                }
+                            };
+
+                            request.onerror = function(event) {
+                                console.error(`Error importing problem ${problem.id}:`, event.target.error);
+                            };
+                        }
+                    });
+                };
+
+                clearRequest.onerror = function(event) {
+                    console.error('Error clearing existing data:', event.target.error);
+                    showNotification('Error importing progress. Please try again.', 'error');
+                };
+            } catch (dbError) {
+                console.error('Database error during import:', dbError);
+                showNotification('Database error during import. Please try again.', 'error');
+            }
         } catch (error) {
             console.error('Error parsing import file:', error);
             showNotification('Invalid file format. Please select a valid JSON file.', 'error');
