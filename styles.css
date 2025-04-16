@@ -421,13 +421,18 @@ p {
     overflow: hidden;
     flex-grow: 1;
     margin: 0 15px;
+    position: relative;
 }
 
 .progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
     height: 100%;
     background-color: var(--primary-color);
     width: 0%;
     transition: width 0.3s ease;
+    min-width: 0;
 }
 
 /* Resource and Study Plan Styles */

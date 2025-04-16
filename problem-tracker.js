@@ -104,6 +104,11 @@ function initializeEventListeners() {
             } else {
                 row.classList.remove('completed');
             }
+
+            // Update progress immediately for better user feedback
+            setTimeout(() => {
+                updateProgressStats();
+            }, 10);
         });
     });
 
@@ -145,6 +150,12 @@ function initializeEventListeners() {
 
 // Add basic event listeners on DOM content loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize progress bar to 0% immediately for visual feedback
+    const progressFill = document.getElementById('progress-fill');
+    if (progressFill) {
+        progressFill.style.width = '0%';
+    }
+
     // If database is already ready, initialize event listeners
     if (dbReady) {
         initializeEventListeners();
@@ -180,7 +191,20 @@ function updateProgressStats() {
             // Update progress bar
             const progressFill = document.getElementById('progress-fill');
             if (progressFill) {
+                console.log(`Setting progress bar width to ${progressPercent}%`);
+                // Force a reflow before changing the width
+                void progressFill.offsetWidth;
                 progressFill.style.width = `${progressPercent}%`;
+
+                // Add a small delay to ensure the transition is applied
+                setTimeout(() => {
+                    // Double-check that the width was applied correctly
+                    if (progressFill.style.width !== `${progressPercent}%`) {
+                        progressFill.style.width = `${progressPercent}%`;
+                    }
+                }, 50);
+            } else {
+                console.error('Progress fill element not found!');
             }
         };
 
