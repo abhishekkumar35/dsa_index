@@ -68,24 +68,44 @@ function loadProblemStatus() {
 
 // Save problem status to IndexedDB
 function saveProblemStatus(problemId, completed) {
-    const transaction = db.transaction(['problems'], 'readwrite');
-    const objectStore = transaction.objectStore('problems');
+    if (!dbReady) {
+        console.log('Database not ready yet, will retry saving problem status');
+        setTimeout(() => saveProblemStatus(problemId, completed), 100);
+        return;
+    }
 
-    const problem = {
-        id: problemId,
-        completed: completed,
-        timestamp: new Date().getTime()
-    };
+    try {
+        const transaction = db.transaction(['problems'], 'readwrite');
+        const objectStore = transaction.objectStore('problems');
 
-    const request = objectStore.put(problem);
+        const problem = {
+            id: problemId,
+            completed: completed,
+            timestamp: new Date().getTime()
+        };
 
-    request.onsuccess = function() {
-        console.log(`Problem ${problemId} status saved: ${completed}`);
-    };
+        const request = objectStore.put(problem);
 
-    request.onerror = function(event) {
-        console.error('Error saving problem status:', event.target.error);
-    };
+        request.onsuccess = function() {
+            console.log(`Problem ${problemId} status saved: ${completed}`);
+            // Force an immediate update of the progress display
+            updateProgressStats();
+        };
+
+        request.onerror = function(event) {
+            console.error('Error saving problem status:', event.target.error);
+        };
+
+        transaction.oncomplete = function() {
+            console.log('Transaction completed successfully');
+        };
+
+        transaction.onerror = function(event) {
+            console.error('Transaction error:', event.target.error);
+        };
+    } catch (error) {
+        console.error('Error in saveProblemStatus:', error);
+    }
 }
 
 // Initialize event listeners after database is ready
@@ -95,9 +115,8 @@ function initializeEventListeners() {
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const problemId = this.id.replace('problem-', '');
-            saveProblemStatus(problemId, this.checked);
 
-            // Update the row styling
+            // Update the row styling immediately
             const row = this.closest('tr');
             if (this.checked) {
                 row.classList.add('completed');
@@ -105,10 +124,30 @@ function initializeEventListeners() {
                 row.classList.remove('completed');
             }
 
-            // Update progress immediately for better user feedback
-            setTimeout(() => {
-                updateProgressStats();
-            }, 10);
+            // Update progress display immediately for instant feedback
+            const allCheckboxes = document.querySelectorAll('.problem-checkbox');
+            let checkedCount = 0;
+            allCheckboxes.forEach(cb => {
+                if (cb.checked) checkedCount++;
+            });
+
+            const totalCount = allCheckboxes.length;
+            const progressPercent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+
+            // Update progress text
+            const progressElement = document.getElementById('progress-display');
+            if (progressElement) {
+                progressElement.textContent = `${checkedCount}/${totalCount} problems completed (${progressPercent}%)`;
+            }
+
+            // Update progress bar
+            const progressFill = document.getElementById('progress-fill');
+            if (progressFill) {
+                progressFill.style.width = `${progressPercent}%`;
+            }
+
+            // Save to database (this will also update progress stats again)
+            saveProblemStatus(problemId, this.checked);
         });
     });
 
@@ -172,48 +211,97 @@ function updateProgressStats() {
     }
 
     try {
+        // First, let's manually count the checked checkboxes for a direct approach
+        const checkboxes = document.querySelectorAll('.problem-checkbox');
+        let checkedCount = 0;
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                checkedCount++;
+            }
+        });
+
+        const totalCount = checkboxes.length;
+        const progressPercent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+
+        console.log(`Direct count: ${checkedCount}/${totalCount} problems completed (${progressPercent}%)`);
+
+        // Update progress display with the direct count
+        const progressElement = document.getElementById('progress-display');
+        if (progressElement) {
+            progressElement.textContent = `${checkedCount}/${totalCount} problems completed (${progressPercent}%)`;
+        }
+
+        // Update progress bar with the direct count
+        const progressFill = document.getElementById('progress-fill');
+        if (progressFill) {
+            console.log(`Setting progress bar width to ${progressPercent}%`);
+            progressFill.style.width = `${progressPercent}%`;
+        } else {
+            console.error('Progress fill element not found!');
+        }
+
+        // Also update the database count for verification
         const transaction = db.transaction(['problems'], 'readonly');
         const objectStore = transaction.objectStore('problems');
-        const index = objectStore.index('completed');
-        const countRequest = index.count(IDBKeyRange.only(true));
+        const getAllRequest = objectStore.getAll();
 
-        countRequest.onsuccess = function() {
-            const completedCount = countRequest.result;
-            const totalCount = document.querySelectorAll('.problem-checkbox').length;
-            const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+        getAllRequest.onsuccess = function() {
+            const problems = getAllRequest.result;
+            let dbCompletedCount = 0;
 
-            // Update progress display if it exists
-            const progressElement = document.getElementById('progress-display');
-            if (progressElement) {
-                progressElement.textContent = `${completedCount}/${totalCount} problems completed (${progressPercent}%)`;
+            if (problems && problems.length > 0) {
+                problems.forEach(problem => {
+                    if (problem.completed) {
+                        dbCompletedCount++;
+                    }
+                });
             }
 
-            // Update progress bar
-            const progressFill = document.getElementById('progress-fill');
-            if (progressFill) {
-                console.log(`Setting progress bar width to ${progressPercent}%`);
-                // Force a reflow before changing the width
-                void progressFill.offsetWidth;
-                progressFill.style.width = `${progressPercent}%`;
+            console.log(`Database count: ${dbCompletedCount}/${problems.length} problems completed`);
 
-                // Add a small delay to ensure the transition is applied
-                setTimeout(() => {
-                    // Double-check that the width was applied correctly
-                    if (progressFill.style.width !== `${progressPercent}%`) {
-                        progressFill.style.width = `${progressPercent}%`;
-                    }
-                }, 50);
-            } else {
-                console.error('Progress fill element not found!');
+            // If there's a mismatch between UI and database, update the database
+            if (dbCompletedCount !== checkedCount) {
+                console.log('Mismatch between UI and database counts, updating database...');
+                updateDatabaseFromUI();
             }
         };
 
-        countRequest.onerror = function(event) {
-            console.error('Error counting completed problems:', event.target.error);
+        getAllRequest.onerror = function(event) {
+            console.error('Error getting all problems:', event.target.error);
         };
     } catch (error) {
         console.error('Error updating progress stats:', error);
     }
+}
+
+// Update database from UI state
+function updateDatabaseFromUI() {
+    if (!dbReady) return;
+
+    const checkboxes = document.querySelectorAll('.problem-checkbox');
+    const transaction = db.transaction(['problems'], 'readwrite');
+    const objectStore = transaction.objectStore('problems');
+
+    checkboxes.forEach(checkbox => {
+        const problemId = checkbox.id.replace('problem-', '');
+        const isCompleted = checkbox.checked;
+
+        const problem = {
+            id: problemId,
+            completed: isCompleted,
+            timestamp: new Date().getTime()
+        };
+
+        objectStore.put(problem);
+    });
+
+    transaction.oncomplete = function() {
+        console.log('Database updated from UI state');
+    };
+
+    transaction.onerror = function(event) {
+        console.error('Error updating database from UI:', event.target.error);
+    };
 }
 
 // Export progress to a JSON file
