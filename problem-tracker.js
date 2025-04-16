@@ -39,7 +39,18 @@ function loadProblemStatus() {
         return;
     }
 
+    console.log('Loading problem status from IndexedDB...');
     const checkboxes = document.querySelectorAll('.problem-checkbox');
+    let loadedCount = 0;
+    let totalToLoad = checkboxes.length;
+
+    // Initialize progress to 0 first
+    updateProgressDisplay(0, totalToLoad);
+
+    if (totalToLoad === 0) {
+        console.log('No checkboxes found on the page');
+        return;
+    }
 
     const transaction = db.transaction(['problems'], 'readonly');
     const objectStore = transaction.objectStore('problems');
@@ -50,20 +61,70 @@ function loadProblemStatus() {
         const request = objectStore.get(problemId);
 
         request.onsuccess = function(event) {
+            loadedCount++;
             const problem = event.target.result;
             if (problem && problem.completed) {
                 checkbox.checked = true;
                 if (row) row.classList.add('completed');
             }
+
+            // If all checkboxes have been processed, update the progress display
+            if (loadedCount === totalToLoad) {
+                console.log('All checkboxes loaded, updating progress display...');
+                calculateAndUpdateProgress();
+            }
         };
 
         request.onerror = function(event) {
+            loadedCount++;
             console.error(`Error loading status for problem ${problemId}:`, event.target.error);
+
+            // Even if there's an error, we need to check if all requests are done
+            if (loadedCount === totalToLoad) {
+                calculateAndUpdateProgress();
+            }
         };
     });
 
-    // Update progress stats after loading
-    updateProgressStats();
+    // Also set a timeout as a fallback to ensure progress is updated
+    setTimeout(() => {
+        calculateAndUpdateProgress();
+    }, 500);
+}
+
+// Calculate and update progress based on current checkbox state
+function calculateAndUpdateProgress() {
+    const checkboxes = document.querySelectorAll('.problem-checkbox');
+    let checkedCount = 0;
+    let totalCount = checkboxes.length;
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            checkedCount++;
+        }
+    });
+
+    console.log(`Calculated progress: ${checkedCount}/${totalCount}`);
+    updateProgressDisplay(checkedCount, totalCount);
+}
+
+// Update the progress display with given counts
+function updateProgressDisplay(completedCount, totalCount) {
+    const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+    console.log(`Updating progress display: ${completedCount}/${totalCount} (${progressPercent}%)`);
+
+    // Update progress text
+    const progressElement = document.getElementById('progress-display');
+    if (progressElement) {
+        progressElement.textContent = `${completedCount}/${totalCount} problems completed (${progressPercent}%)`;
+    }
+
+    // Update progress bar
+    const progressFill = document.getElementById('progress-fill');
+    if (progressFill) {
+        progressFill.style.width = `${progressPercent}%`;
+    }
 }
 
 // Save problem status to IndexedDB
@@ -125,26 +186,7 @@ function initializeEventListeners() {
             }
 
             // Update progress display immediately for instant feedback
-            const allCheckboxes = document.querySelectorAll('.problem-checkbox');
-            let checkedCount = 0;
-            allCheckboxes.forEach(cb => {
-                if (cb.checked) checkedCount++;
-            });
-
-            const totalCount = allCheckboxes.length;
-            const progressPercent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
-
-            // Update progress text
-            const progressElement = document.getElementById('progress-display');
-            if (progressElement) {
-                progressElement.textContent = `${checkedCount}/${totalCount} problems completed (${progressPercent}%)`;
-            }
-
-            // Update progress bar
-            const progressFill = document.getElementById('progress-fill');
-            if (progressFill) {
-                progressFill.style.width = `${progressPercent}%`;
-            }
+            calculateAndUpdateProgress();
 
             // Save to database (this will also update progress stats again)
             saveProblemStatus(problemId, this.checked);
@@ -189,17 +231,30 @@ function initializeEventListeners() {
 
 // Add basic event listeners on DOM content loaded
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM content loaded, initializing progress bar...');
+
     // Initialize progress bar to 0% immediately for visual feedback
     const progressFill = document.getElementById('progress-fill');
     if (progressFill) {
         progressFill.style.width = '0%';
     }
 
+    // Count checkboxes to initialize the progress display
+    const checkboxes = document.querySelectorAll('.problem-checkbox');
+    const totalCount = checkboxes.length;
+    console.log(`Found ${totalCount} checkboxes on the page`);
+
+    // Initialize progress display with 0 completed
+    updateProgressDisplay(0, totalCount);
+
     // If database is already ready, initialize event listeners
     if (dbReady) {
+        console.log('Database already ready, initializing event listeners');
         initializeEventListeners();
+    } else {
+        console.log('Database not ready yet, will initialize event listeners when ready');
+        // Otherwise, they'll be initialized when the database is ready
     }
-    // Otherwise, they'll be initialized when the database is ready
 });
 
 // Update progress statistics
@@ -211,34 +266,8 @@ function updateProgressStats() {
     }
 
     try {
-        // First, let's manually count the checked checkboxes for a direct approach
-        const checkboxes = document.querySelectorAll('.problem-checkbox');
-        let checkedCount = 0;
-        checkboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                checkedCount++;
-            }
-        });
-
-        const totalCount = checkboxes.length;
-        const progressPercent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
-
-        console.log(`Direct count: ${checkedCount}/${totalCount} problems completed (${progressPercent}%)`);
-
-        // Update progress display with the direct count
-        const progressElement = document.getElementById('progress-display');
-        if (progressElement) {
-            progressElement.textContent = `${checkedCount}/${totalCount} problems completed (${progressPercent}%)`;
-        }
-
-        // Update progress bar with the direct count
-        const progressFill = document.getElementById('progress-fill');
-        if (progressFill) {
-            console.log(`Setting progress bar width to ${progressPercent}%`);
-            progressFill.style.width = `${progressPercent}%`;
-        } else {
-            console.error('Progress fill element not found!');
-        }
+        // Use the calculateAndUpdateProgress function to update the UI
+        calculateAndUpdateProgress();
 
         // Also update the database count for verification
         const transaction = db.transaction(['problems'], 'readonly');
@@ -257,10 +286,20 @@ function updateProgressStats() {
                 });
             }
 
+            // Get the current UI count for comparison
+            const checkboxes = document.querySelectorAll('.problem-checkbox');
+            let uiCheckedCount = 0;
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    uiCheckedCount++;
+                }
+            });
+
             console.log(`Database count: ${dbCompletedCount}/${problems.length} problems completed`);
+            console.log(`UI count: ${uiCheckedCount}/${checkboxes.length} problems completed`);
 
             // If there's a mismatch between UI and database, update the database
-            if (dbCompletedCount !== checkedCount) {
+            if (dbCompletedCount !== uiCheckedCount) {
                 console.log('Mismatch between UI and database counts, updating database...');
                 updateDatabaseFromUI();
             }
